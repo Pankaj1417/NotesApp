@@ -1,5 +1,6 @@
 package com.example.mynotes
 
+import android.icu.lang.UCharacter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.model.MyAdapter
 import com.example.mynotes.model.noteClicked
 import com.google.android.material.navigation.NavigationView
@@ -35,7 +37,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // creating layout manager
-        val layoutManager = LinearLayoutManager(this)
+        val layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         recyclerView.layoutManager = layoutManager
 
         //intiializing

@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynotes.R
 import kotlinx.android.synthetic.main.single_note_view.view.*
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 class MyAdapter(private val titles : ArrayList<String>, private val content : ArrayList<String> ,private val listener : noteClicked) : RecyclerView.Adapter<MyViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
