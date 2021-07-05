@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/general">
+
+        <menu >
+            <item
+                android:icon="@drawable/ic_baseline_event_note_24"
+                android:title="@string/notes"
+                android:id="@+id/notesBtn"/>
+            <item
+                android:icon="@drawable/ic_baseline_add_24"
+                android:title="@string/addnotes"
+                android:id="@+id/addBtn"/>
+            <item
+                android:icon="@drawable/ic_baseline_sync_24"
+                android:title="@string/sync"
+                android:id="@id/shareBtn"/>
+        </menu>
+    </item>
+    <item android:title="@string/support">
+
+        <menu >
+            <item
+                android:icon="@drawable/ic_baseline_ratingstar_half_24"
+                android:title="@string/rating"
+                android:id="@+id/rateBtn"
+                />
+            <item
+                android:icon="@drawable/ic_baseline_share_24"
+                android:title="@string/shareapp"
+                android:id="@+id/shareBtn"/>
+        </menu>
+    </item>
+    <item android:title="@string/logout">
+
+        <menu >
+            <item
+                android:icon="@drawable/ic_baseline_logout_24"
+                android:title="@string/logout"
+                android:id="@+id/logoutBtn"/>
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">MyNotes</string>
+    <string name="logout">Logout</string>
+    <string name="support">Support</string>
+    <string name="general">General</string>
+    <string name="notes">notes</string>
+    <string name="addnotes">addNotes</string>
+    <string name="sync">sync</string>
+    <string name="rating">rating</string>
+    <string name="shareapp">shareApp</string>
+    <string name="logoutnow">logout</string>
+    <string name="open" />
+    <string name="close" />
+    <string name="settings">Settings</string>
+</resources>
