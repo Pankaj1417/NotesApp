@@ -9,7 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyNotes">
-        <activity android:name=".MainActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity
+            android:name=".AddNotes"
+            android:label="@string/title_activity_add_notes"
+            android:theme="@style/Theme.MyNotes.NoActionBar"></activity>
+        <activity
+            android:name=".NotesDeatils"
+            android:label="@string/title_activity_notes_deatils"
+            android:theme="@style/Theme.MyNotes.NoActionBar" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

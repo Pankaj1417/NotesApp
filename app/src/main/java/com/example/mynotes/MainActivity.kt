@@ -1,24 +1,23 @@
 package com.example.mynotes
 
-import android.icu.lang.UCharacter
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.model.MyAdapter
-import com.example.mynotes.model.noteClicked
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.single_note_view.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener, noteClicked {
+class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
     //Variables
     private lateinit var drawerLayout : DrawerLayout
     lateinit var toggle : ActionBarDrawerToggle
@@ -37,20 +36,20 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // creating layout manager
-        val layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+        val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
         //intiializing
         drawerLayout = drawer
         navView = navigation_view
         toolBar = toolbar
-         titles = ArrayList<String>()
-         contents = ArrayList<String>()
+        titles = ArrayList<String>()
+        contents = ArrayList<String>()
         update()
-        adapter = MyAdapter(titles,contents,this)
+        adapter = MyAdapter(titles,contents)
         recyclerView.adapter = adapter
 
-                                            // navView button click managed
+        // navView button click managed
         navView.setNavigationItemSelectedListener(this)
         toggle = ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close)
         toggle.isDrawerIndicatorEnabled = true
@@ -60,9 +59,13 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-           else->{
-               Toast.makeText(this,"ButtonClicked",Toast.LENGTH_LONG).show()
-           }
+            R.id.addBtn -> {
+                val intent : Intent = Intent(this,AddNotes::class.java)
+                startActivity(intent)
+            }
+            else->{
+                Toast.makeText(this,"ButtonClicked",Toast.LENGTH_LONG).show()
+            }
         }
 
         return false
@@ -90,7 +93,11 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         contents.add("hello")
     }
 
-    override fun noteItemClicked(titles: String, content: String) {
+    fun noteItemClicked(titles: String, content: String) {
         Toast.makeText(this, "Item Clicked" , Toast.LENGTH_SHORT).show()
     }
+    fun fabBtnClicked(view : View){
+        startActivity(Intent(this,AddNotes::class.java))
+    }
+
 }
