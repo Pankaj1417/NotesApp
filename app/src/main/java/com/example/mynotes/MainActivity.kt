@@ -7,23 +7,24 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.mynotes.model.MyAdapter
+import com.example.mynotes.auth.LoginActivity
 import com.example.mynotes.model.Notes
+import com.example.mynotes.notes.AddNotes
+import com.example.mynotes.notes.NotesDeatils
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.single_note_view.*
 import kotlinx.android.synthetic.main.single_note_view.view.*
-import java.util.*
-import kotlin.collections.ArrayList
+
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
     //Variables
@@ -32,8 +33,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     lateinit var navView : NavigationView
     lateinit var toolBar : androidx.appcompat.widget.Toolbar
     lateinit var fStore : FirebaseFirestore
-    private var adapter: NotesRecyclerAdapter? = null
-
+    lateinit  var fAuth : FirebaseAuth
     //onCreate fun
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -42,12 +42,39 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         // toolbar support
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         fStore = FirebaseFirestore.getInstance()
-        presentNotes()
+        fAuth = FirebaseAuth.getInstance()
+
+        val query = fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING)
+        val myNotes = FirestoreRecyclerOptions.Builder<Notes>().setQuery(query, Notes::class.java).setLifecycleOwner(this).build()
+        val adapter = object : FirestoreRecyclerAdapter<Notes, NoteViewHolder>(myNotes){
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
+                val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.single_note_view,parent,false)
+                return NoteViewHolder(view)
+            }
+
+            override fun onBindViewHolder(holder: NoteViewHolder, p1: Int, note: Notes) {
+                val id = fStore.collection("notes").id
+                holder.content.text = note.content
+                holder.titles.text = note.title
+                holder.view.setOnClickListener {
+                    val intent : Intent = Intent(holder.view.context, NotesDeatils::class.java)
+                    intent.putExtra("Title" , note.title)
+                    intent.putExtra("Content",note.content)
+                    intent.putExtra("noteId",id)
+//                    intent.putExtra("noteId",)
+                    holder.view.context.startActivity(intent)
+                }
+            }
+
+        }
         // creating layout manager
         val layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+
         //intiializing
 
         drawerLayout = drawer
@@ -61,12 +88,54 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         toggle.syncState()
 
     }
+
+    private fun checkUser() : Boolean{
+        if(FirebaseAuth.getInstance().currentUser!!.isAnonymous){
+            return true
+        }
+        return false
+    }
+
+    private fun showAlert(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Are you sure ?")
+        builder.setMessage("You are not logged in if you signout you will loose all your data")
+        builder.setPositiveButton("Sync Now"){
+                _, which ->
+            startActivity(Intent(this,LoginActivity::class.java))
+            finish()
+        }
+        builder.setNegativeButton("continue"){
+                _, which ->
+            fAuth.signOut()
+            startActivity(Intent(this,SplashActivity::class.java))
+        }
+        builder.setNeutralButton("cancle"){
+                _, which ->
+            Toast.makeText(applicationContext,"Signout cancelled",Toast.LENGTH_LONG).show()
+        }
+        builder.show()
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.addBtn -> {
-                val intent : Intent = Intent(this,AddNotes::class.java)
+                val intent : Intent = Intent(this, AddNotes::class.java)
                 startActivity(intent)
             }
+            R.id.logoutBtn -> {
+                    if(checkUser()){
+                        showAlert()
+                    }else{
+                       fAuth.signOut()
+                    }
+            }
+
+            R.id.syncBtn -> {
+                startActivity(Intent(applicationContext,LoginActivity::class.java))
+                finish()
+            }
+
             else->{
                 Toast.makeText(this,"ButtonClicked",Toast.LENGTH_LONG).show()
             }
@@ -87,56 +156,15 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         return super.onOptionsItemSelected(item)
     }
 
-    //clicks Managed
-    fun noteItemClicked(titles: String, content: String) {
-        Toast.makeText(this, "Item Clicked" , Toast.LENGTH_SHORT).show()
+    fun fabBtnClicked() {
+        startActivity(Intent(this, AddNotes::class.java))
     }
 
-    fun fabBtnClicked(view : View){
-        startActivity(Intent(this,AddNotes::class.java))
-    }
-
-    private fun presentNotes(){
-        val query = fStore.collection("products").orderBy("title", Query.Direction.ASCENDING)
-        val myNotes = FirestoreRecyclerOptions.Builder<Notes>().setQuery(query, Notes::class.java).build()
-        adapter = NotesRecyclerAdapter(myNotes)
-
-    }
     private inner class NoteViewHolder internal constructor(val view: View) : RecyclerView.ViewHolder(view) {
         val content : TextView = view.content
         val titles : TextView = view.titles
-    }
-    private inner class NotesRecyclerAdapter(allNotes: FirestoreRecyclerOptions<Notes>) : FirestoreRecyclerAdapter<Notes, NoteViewHolder>(allNotes) {
-
-        override fun onBindViewHolder(noteViewHolder: NoteViewHolder, position: Int, notes: Notes) {
-            val currentTitle = notes.title?.get(position)
-            val currentContent = notes.content?.get(position)
-            noteViewHolder.content.text = currentContent.toString()
-            noteViewHolder.titles.text = currentTitle.toString()
-            noteViewHolder.view.setOnClickListener {
-                val intent : Intent = Intent(noteViewHolder.view.context,NotesDeatils::class.java)
-                intent.putExtra("Title" , currentTitle)
-                intent.putExtra("Content",currentContent)
-                noteViewHolder.view.context.startActivity(intent)
-            }
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.single_note_view, parent, false)
-            return NoteViewHolder(view)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        adapter!!.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if(adapter!= null){
-            adapter!!.stopListening()
-        }
 
     }
+
+
 }

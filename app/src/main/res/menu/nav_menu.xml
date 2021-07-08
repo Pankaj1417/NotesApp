@@ -14,7 +14,7 @@
             <item
                 android:icon="@drawable/ic_baseline_sync_24"
                 android:title="@string/sync"
-                android:id="@id/shareBtn"/>
+                android:id="@+id/syncBtn"/>
         </menu>
     </item>
     <item android:title="@string/support">

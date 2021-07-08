@@ -1,4 +1,4 @@
-package com.example.mynotes
+package com.example.mynotes.notes
 
 import android.os.Bundle
 import android.view.Menu
@@ -8,8 +8,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mynotes.R
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_add_notes.*

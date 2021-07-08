@@ -57,6 +57,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.firebaseui:firebase-ui-firestore:4.1.0'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android-extensions'

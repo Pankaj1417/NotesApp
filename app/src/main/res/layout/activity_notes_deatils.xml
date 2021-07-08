@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NotesDeatils">
+    tools:context=".notes.NotesDeatils">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/teal_700"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/Theme.MyNotes.PopupOverlay" >
             <TextView
                 android:id="@+id/notesDetailTitle"
@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@drawable/ic_baseline_edit_note_btn"
+        tools:ignore="VectorDrawableCompat" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
