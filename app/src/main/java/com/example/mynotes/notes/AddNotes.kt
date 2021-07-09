@@ -10,6 +10,8 @@ import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mynotes.R
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_add_notes.*
@@ -22,6 +24,7 @@ lateinit var fStore : FirebaseFirestore
 lateinit var noteContent : EditText
 lateinit var noteTitle : EditText
 lateinit var saveProgress : ProgressBar
+lateinit var fUser : FirebaseUser
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_notes)
@@ -30,8 +33,10 @@ lateinit var saveProgress : ProgressBar
         noteTitle = addNoteTitle
         noteContent = addNoteContent
         saveProgress = addNoteProgressBar
+        fUser = FirebaseAuth.getInstance().currentUser!!
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+
             val nTitle : String = noteTitle.text.toString()
             val nContent : String = noteContent.text.toString()
 
@@ -40,7 +45,7 @@ lateinit var saveProgress : ProgressBar
                 return@setOnClickListener
             }
             saveProgress.visibility = View.VISIBLE
-           val docRef : DocumentReference = fStore.collection("notes").document()
+            val docRef : DocumentReference = fStore.collection("notes").document(fUser.uid).collection("myNotes").document()
             val note  = HashMap<String,String>()
             note.put("title",nTitle)
             note.put("content",nContent)

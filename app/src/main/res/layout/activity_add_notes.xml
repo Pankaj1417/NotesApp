@@ -15,14 +15,14 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/teal_700"
+            android:background="@color/black"
             app:popupTheme="@style/Theme.MyNotes.PopupOverlay" >
 
             <EditText
                 android:id="@+id/addNoteTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/teal_700"
+                android:background="@color/black"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="@android:string/untitled"

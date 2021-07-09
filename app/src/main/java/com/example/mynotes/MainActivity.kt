@@ -1,13 +1,13 @@
 package com.example.mynotes
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -46,23 +46,33 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         fStore = FirebaseFirestore.getInstance()
         fAuth = FirebaseAuth.getInstance()
 
-        val query = fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING)
-        val myNotes = FirestoreRecyclerOptions.Builder<Notes>().setQuery(query, Notes::class.java).setLifecycleOwner(this).build()
+        val query = fStore.collection("notes").document(fAuth.currentUser!!.uid).collection("myNotes").orderBy(
+            "title",
+            Query.Direction.DESCENDING
+        )
+        val myNotes = FirestoreRecyclerOptions.Builder<Notes>().setQuery(query, Notes::class.java).setLifecycleOwner(
+            this
+        ).build()
         val adapter = object : FirestoreRecyclerAdapter<Notes, NoteViewHolder>(myNotes){
 
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-                val view = LayoutInflater.from(this@MainActivity).inflate(R.layout.single_note_view,parent,false)
+                val view = LayoutInflater.from(this@MainActivity).inflate(
+                    R.layout.single_note_view,
+                    parent,
+                    false
+                )
                 return NoteViewHolder(view)
             }
 
             override fun onBindViewHolder(holder: NoteViewHolder, p1: Int, note: Notes) {
-                val id = fStore.collection("notes").id
+                val snapshot = snapshots.getSnapshot(p1)
+                val id = snapshot.id
                 holder.content.text = note.content
                 holder.titles.text = note.title
                 holder.view.setOnClickListener {
                     val intent : Intent = Intent(holder.view.context, NotesDeatils::class.java)
-                    intent.putExtra("Title" , note.title)
-                    intent.putExtra("Content",note.content)
+                    intent.putExtra("Title", note.title)
+                    intent.putExtra("Content", note.content)
                     intent.putExtra("noteId",id)
 //                    intent.putExtra("noteId",)
                     holder.view.context.startActivity(intent)
@@ -71,7 +81,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         }
         // creating layout manager
-        val layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = layoutManager
 
@@ -83,7 +93,7 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
 
         // navView button click managed
         navView.setNavigationItemSelectedListener(this)
-        toggle = ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
         toggle.isDrawerIndicatorEnabled = true
         toggle.syncState()
 
@@ -100,19 +110,16 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Are you sure ?")
         builder.setMessage("You are not logged in if you signout you will loose all your data")
-        builder.setPositiveButton("Sync Now"){
-                _, which ->
-            startActivity(Intent(this,LoginActivity::class.java))
+        builder.setPositiveButton("Sync Now"){ _, _ ->
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-        builder.setNegativeButton("continue"){
-                _, which ->
+        builder.setNegativeButton("continue"){ _, _ ->
             fAuth.signOut()
-            startActivity(Intent(this,SplashActivity::class.java))
+            startActivity(Intent(this, SplashActivity::class.java))
         }
-        builder.setNeutralButton("cancle"){
-                _, which ->
-            Toast.makeText(applicationContext,"Signout cancelled",Toast.LENGTH_LONG).show()
+        builder.setNeutralButton("cancle"){ _, _ ->
+            Toast.makeText(applicationContext, "Signout cancelled", Toast.LENGTH_LONG).show()
         }
         builder.show()
     }
@@ -120,24 +127,24 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.addBtn -> {
-                val intent : Intent = Intent(this, AddNotes::class.java)
+                val intent: Intent = Intent(this, AddNotes::class.java)
                 startActivity(intent)
             }
             R.id.logoutBtn -> {
-                    if(checkUser()){
-                        showAlert()
-                    }else{
-                       fAuth.signOut()
-                    }
+                if (checkUser()) {
+                    showAlert()
+                } else {
+                    fAuth.signOut()
+                }
             }
 
             R.id.syncBtn -> {
-                startActivity(Intent(applicationContext,LoginActivity::class.java))
+                startActivity(Intent(applicationContext, LoginActivity::class.java))
                 finish()
             }
 
             else->{
-                Toast.makeText(this,"ButtonClicked",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "ButtonClicked", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -145,22 +152,24 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.option_menu,menu)
+        menuInflater.inflate(R.menu.option_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.settings){
-            Toast.makeText(this,"Setting selected",Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Setting selected", Toast.LENGTH_LONG).show()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun fabBtnClicked() {
-        startActivity(Intent(this, AddNotes::class.java))
+    fun fabBtnClicked(view: View) {
+      startActivity(Intent(applicationContext, AddNotes::class.java))
     }
 
-    private inner class NoteViewHolder internal constructor(val view: View) : RecyclerView.ViewHolder(view) {
+    private inner class NoteViewHolder internal constructor(val view: View) : RecyclerView.ViewHolder(
+        view
+    ) {
         val content : TextView = view.content
         val titles : TextView = view.titles
 
