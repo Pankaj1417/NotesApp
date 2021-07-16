@@ -3,6 +3,8 @@ package com.example.mynotes
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -12,8 +14,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.auth.LoginActivity
+import com.example.mynotes.auth.RegisterActivity
+import com.example.mynotes.model.MyViewHolder
 import com.example.mynotes.model.Notes
 import com.example.mynotes.notes.AddNotes
+import com.example.mynotes.notes.EditNote
 import com.example.mynotes.notes.NotesDeatils
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -24,6 +29,7 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.single_note_view.view.*
+import org.w3c.dom.Document
 
 
 class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
@@ -74,8 +80,38 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                     intent.putExtra("Title", note.title)
                     intent.putExtra("Content", note.content)
                     intent.putExtra("noteId",id)
-//                    intent.putExtra("noteId",)
                     holder.view.context.startActivity(intent)
+                }
+               val menuIcon =  holder.view.menuIcon
+
+                menuIcon.setOnClickListener{
+                    val popupMenu: PopupMenu = PopupMenu(menuIcon.context,holder.view)
+                    popupMenu.menuInflater.inflate(R.menu.pop_up,popupMenu.menu)
+                    popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                        when(item.itemId) {
+                            R.id.action_edit->
+                            {
+                                val intent = Intent(this@MainActivity, EditNote::class.java)
+                                intent.putExtra("Title" ,note.title)
+                                intent.putExtra("Content",note.content)
+                                intent.putExtra("noteId",id)
+                                startActivity(intent)
+                            }
+                            R.id.action_delete ->
+                            {
+                                val docRef  = fStore.collection("notes").document(fAuth.currentUser!!.uid).
+                                collection("myNotes").document(id).delete().addOnCompleteListener{
+                                    if(it.isSuccessful){
+                                        Toast.makeText(this@MainActivity,"Noted Deleted",Toast.LENGTH_SHORT).show()
+                                    }else{
+                                        Toast.makeText(this@MainActivity,"Some Error Occured",Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        }
+                        true
+                    })
+                    popupMenu.show()
                 }
             }
 
@@ -98,31 +134,35 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         toggle.syncState()
 
     }
-
+//function to check which type of user is currently logged in
     private fun checkUser() : Boolean{
         if(FirebaseAuth.getInstance().currentUser!!.isAnonymous){
             return true
         }
         return false
     }
-
-    private fun showAlert(){
+//function to show alert box for anonymous user
+    private fun showAnonymousAlert(){
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Are you sure ?")
-        builder.setMessage("You are not logged in if you signout you will loose all your data")
-        builder.setPositiveButton("Sync Now"){ _, _ ->
-            startActivity(Intent(this, LoginActivity::class.java))
+        builder.setMessage("You are logged in with Temporary account and may loose current notes")
+        builder.setPositiveButton("Sync Notes"){ _, _ ->
+            startActivity(Intent(this, RegisterActivity::class.java))
             finish()
         }
-        builder.setNegativeButton("continue"){ _, _ ->
+        builder.setNegativeButton("Logout"){ _, _ ->
+            fAuth.currentUser!!.delete()
             fAuth.signOut()
             startActivity(Intent(this, SplashActivity::class.java))
         }
-        builder.setNeutralButton("cancle"){ _, _ ->
+        builder.setNeutralButton("Cancle"){ _, _ ->
             Toast.makeText(applicationContext, "Signout cancelled", Toast.LENGTH_LONG).show()
+            startActivity(intent)
         }
         builder.show()
     }
+    //function to show alert box for real user
+
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -130,26 +170,33 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
                 val intent: Intent = Intent(this, AddNotes::class.java)
                 startActivity(intent)
             }
+
             R.id.logoutBtn -> {
                 if (checkUser()) {
-                    showAlert()
+                    showAnonymousAlert()
                 } else {
                     fAuth.signOut()
+                    startActivity(Intent(this,SplashActivity::class.java))
                 }
             }
-
             R.id.syncBtn -> {
-                startActivity(Intent(applicationContext, LoginActivity::class.java))
-                finish()
+                if(checkUser()){
+                    startActivity(Intent(applicationContext, RegisterActivity::class.java))
+                }else{
+                    Toast.makeText(this,"Already synced",Toast.LENGTH_LONG).show()
+                }
             }
-
+            R.id.SwitchBtn -> {
+                startActivity(Intent(applicationContext, LoginActivity::class.java))
+            }
             else->{
-                Toast.makeText(this, "ButtonClicked", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Comming Soon", Toast.LENGTH_LONG).show()
             }
         }
 
         return false
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.option_menu, menu)
@@ -167,12 +214,10 @@ class MainActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
       startActivity(Intent(applicationContext, AddNotes::class.java))
     }
 
-    private inner class NoteViewHolder internal constructor(val view: View) : RecyclerView.ViewHolder(
-        view
-    ) {
-        val content : TextView = view.content
-        val titles : TextView = view.titles
-
+    private inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val content : TextView = itemView.content
+        val titles : TextView = itemView.titles
+        val view = itemView
     }
 
 

@@ -18,8 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".auth.RegisterActivity" />
-        <activity android:name=".auth.LoginActivity" />
+        <activity android:name=".auth.RegisterActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".auth.LoginActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".notes.EditNote"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

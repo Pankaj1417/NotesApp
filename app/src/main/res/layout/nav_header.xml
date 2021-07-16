@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
-            android:textColor="@color/teal_700"
+            android:textColor="@color/white"
             android:id="@+id/userNameTV"
             android:layout_marginTop="10dp"
             android:textSize="25sp"
@@ -44,7 +44,7 @@
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
             android:id="@+id/userMailTV"
-            android:textColor="@color/teal_700"
+            android:textColor="@color/white"
             android:layout_marginTop="5dp"
             android:textSize="25sp"
             />

@@ -23,4 +23,12 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_add_notes">AddNotes</string>
     <string name="enter_your_notes_here">Enter Your Notes Here</string>
+    <string name="switchacc">Switch</string>
+    <string name="create_account">Create Account</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sync_now">Sync Now</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="create_new_account">Create New Account</string>
 </resources>

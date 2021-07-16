@@ -4,16 +4,16 @@
 
         <menu >
             <item
-                android:icon="@drawable/ic_baseline_event_note_24"
-                android:title="@string/notes"
-                android:id="@+id/notesBtn"/>
+                android:icon="@drawable/ic_baseline_open_in_new_24"
+                android:title="Switch Account"
+                android:id="@+id/SwitchBtn"/>
             <item
                 android:icon="@drawable/ic_baseline_add_24"
-                android:title="@string/addnotes"
+                android:title="Add Notes"
                 android:id="@+id/addBtn"/>
             <item
                 android:icon="@drawable/ic_baseline_sync_24"
-                android:title="@string/sync"
+                android:title = "Sync"
                 android:id="@+id/syncBtn"/>
         </menu>
     </item>
@@ -22,13 +22,13 @@
         <menu >
             <item
                 android:icon="@drawable/ic_baseline_ratingstar_half_24"
-                android:title="@string/rating"
+                android:title="Rating"
                 android:id="@+id/rateBtn"
                 />
             <item
-                android:icon="@drawable/ic_baseline_share_24"
-                android:title="@string/shareapp"
-                android:id="@+id/shareBtn"/>
+                android:icon="@drawable/ic_baseline_feedback_24"
+                android:title="Feedback"
+                android:id="@+id/feedbackBtn"/>
         </menu>
     </item>
     <item android:title="@string/logout">
