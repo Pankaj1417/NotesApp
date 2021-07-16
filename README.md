@@ -13,5 +13,5 @@ Anonymous users are maintained using Splash Screen , This user automatically get
 ![WhatsApp Image 2021-07-17 at 1 24 26 AM (4)](https://user-images.githubusercontent.com/72029444/126002949-573a8898-a876-499a-9a6a-681ef45bcba0.jpeg)
 
 // Notes Screen
-![WhatsApp Image 2021-07-17 at 1 24 26 AM (3)](https://user-images.githubusercontent.com/72029444/126003227-9016868c-60cd-48bf-bf0f-8706d47ee686.jpeg)
+
 
