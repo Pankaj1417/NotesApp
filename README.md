@@ -8,8 +8,8 @@ create a new account and all those notes created by that user will get stored in
 Anonymous users are maintained using Splash Screen , This user automatically gets created when any unauthenticated user tries to open the application.
 
 
-
 // Splash Screen
+
 ![WhatsApp Image 2021-07-17 at 1 24 26 AM (4)](https://user-images.githubusercontent.com/72029444/126002949-573a8898-a876-499a-9a6a-681ef45bcba0.jpeg)
 
 // Notes Screen
